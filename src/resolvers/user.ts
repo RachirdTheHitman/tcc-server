@@ -44,7 +44,6 @@ export class UserResolver {
       return user.email;
     }
 
-    //current user wants to see someone elses email
     return "";
   }
 
@@ -55,8 +54,6 @@ export class UserResolver {
       return null;
     }
 
-    // const user = await User.findOne(req.session.userID);
-    // return user;
     return User.findOne(req.session.userID);
   }
 
@@ -71,13 +68,9 @@ export class UserResolver {
     }
 
     const hashedPassword = await argon2.hash(options.password);
-    // const user = em.create(User, {
-    //   username: options.username,
-    //   password: hashedPassword,
-    // });
+
     let user;
     try {
-      // User.create({}).save()
       const result = await getConnection()
         .createQueryBuilder()
         .insert()
@@ -90,10 +83,8 @@ export class UserResolver {
         .returning("*")
         .execute();
       user = result.raw[0];
-      //   await em.persistAndFlush(user);
     } catch (err) {
       if (err.code === "23505") {
-        // || err.detail.includes("already exists")) {
         return {
           errors: [
             {

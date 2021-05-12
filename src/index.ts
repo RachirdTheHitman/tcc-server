@@ -33,7 +33,7 @@ const main = async () => {
 
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
-  app.set("proxy", 1);
+  app.set("trust proxy", 1);
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
@@ -46,12 +46,12 @@ const main = async () => {
       name: COOKIE_NAME,
       store: new RedisStore({ client: redis, disableTouch: true }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10 years
         httpOnly: true,
         secure: __prod__, // cookie only works in https
-        sameSite: "lax", //protecting csrf
+        sameSite: "none", //protecting csrf
         domain: __prod__ ? ".richardthehitman.com" : undefined,
-      }, //10 years
+      }, 
       saveUninitialized: false, //create a session by default
       secret: process.env.SESSION_SECRET,
       resave: false,
